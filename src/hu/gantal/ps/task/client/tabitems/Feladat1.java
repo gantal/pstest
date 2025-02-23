@@ -12,7 +12,7 @@ public class Feladat1 extends TabItem {
 	@Override
 	protected void onRender(Element parent, int index) {
 		super.onRender(parent, index);
-		
+
 		Button b = new Button("Gomb");
 		add(b);
 	}

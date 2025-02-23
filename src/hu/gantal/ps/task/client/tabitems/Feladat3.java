@@ -12,41 +12,41 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.RootPanel;
 
 public class Feladat3 extends TabItem {
-    
-    public Feladat3() {
-        super("Feladat3");
-    }
 
-    @Override
-    protected void onRender(Element parent, int index) {
-        super.onRender(parent, index);
+	public Feladat3() {
+		super("Feladat3");
+	}
 
-        final LayoutContainer container = new LayoutContainer();
-        container.setSize(RootPanel.get().getOffsetWidth(), RootPanel.get().getOffsetHeight());
+	@Override
+	protected void onRender(Element parent, int index) {
+		super.onRender(parent, index);
 
-    	container.addListener(Events.OnClick, new Listener<ComponentEvent>() {
+		final LayoutContainer container = new LayoutContainer();
+		container.setSize(RootPanel.get().getOffsetWidth(), RootPanel.get().getOffsetHeight());
+
+		container.addListener(Events.OnClick, new Listener<ComponentEvent>() {
 			@Override
 			public void handleEvent(ComponentEvent event) {
 				try {
-			         if (event == null) {
-                         throw new IllegalArgumentException("Event értéke null");
-                     }
-			         
-						int x = event.getClientX();
-						int y = event.getClientY();
-						
-						Window window = new Window();
-						window.setSize(200, 100);
-						window.setHeading("Kattintási ablak fejléc");
-						window.setPosition(x, y);
-						window.show();
+					if (event == null) {
+						throw new IllegalArgumentException("Event értéke null");
+					}
+
+					int x = event.getClientX();
+					int y = event.getClientY();
+
+					Window window = new Window();
+					window.setSize(200, 100);
+					window.setHeading("Kattintási ablak fejléc");
+					window.setPosition(x, y);
+					window.show();
 				} catch (Exception e) {
-                    GWT.log("Hiba történt az eseménykezelés során: ", e);
-                }
+					GWT.log("Hiba történt az eseménykezelés során: ", e);
+				}
 			}
 		});
 
-        setLayout(new FitLayout());
-        add(container);
-    }
+		setLayout(new FitLayout());
+		add(container);
+	}
 }
