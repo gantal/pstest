@@ -10,6 +10,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 
 import hu.gantal.ps.task.client.tabitems.Feladat1;
+import hu.gantal.ps.task.client.tabitems.Feladat2;
 
 public class PannonSetTask implements EntryPoint {
 
@@ -26,7 +27,8 @@ public class PannonSetTask implements EntryPoint {
 		cp.setLayout(new FitLayout());
 
 		tp = new TabPanel();
-		tp.add(new Feladat1());		
+		tp.add(new Feladat1());
+		tp.add(new Feladat2());
 		cp.add(tp);
 		Window.addResizeHandler(new ResizeHandler() {
 			@Override
