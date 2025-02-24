@@ -12,6 +12,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 import hu.gantal.ps.task.client.tabitems.Feladat1;
 import hu.gantal.ps.task.client.tabitems.Feladat2;
 import hu.gantal.ps.task.client.tabitems.Feladat3;
+import hu.gantal.ps.task.client.tabitems.Feladat4;
 
 public class PannonSetTask implements EntryPoint {
 
@@ -31,6 +32,7 @@ public class PannonSetTask implements EntryPoint {
 		tp.add(new Feladat1());
 		tp.add(new Feladat2());
 		tp.add(new Feladat3());
+		tp.add(new Feladat4());
 		cp.add(tp);
 		Window.addResizeHandler(new ResizeHandler() {
 			@Override
