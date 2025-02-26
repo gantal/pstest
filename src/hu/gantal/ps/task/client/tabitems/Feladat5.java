@@ -13,8 +13,8 @@ import com.google.gwt.core.client.GWT;
 public class Feladat5 extends TabItem {
 
 	private TextArea textArea;
-	public static final String WIDTH = "100%";
-	public static final String HEIGHT = "100%";
+	private static final String WIDTH = "100%";
+	private static final String HEIGHT = "100%";
 
 	public Feladat5() {
 		super("Feladat5");
