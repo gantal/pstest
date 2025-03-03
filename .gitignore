@@ -1,0 +1,8 @@
+/war/ExtGWT/
+/war/pannonsettask/
+/war/ps/
+/war/WEB-INF/
+/gwt-unitCache/
+.project
+.settings/
+.classpath
