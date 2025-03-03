@@ -4,9 +4,9 @@ import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -26,9 +26,9 @@ public class Feladat7 extends TabItem {
 
 	public Feladat7() {
 		super("Feladat7");
+		setSize(600, 400);
 		setLayout(new FitLayout());
 		initGrid();
-		setSize(600, 400);
 		add(createMainPanel());
 	}
 
@@ -51,12 +51,12 @@ public class Feladat7 extends TabItem {
 		grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 	}
 
-	private VerticalPanel createMainPanel() {
-		VerticalPanel panel = new VerticalPanel();
+	private ContentPanel createMainPanel() {
+		ContentPanel panel = new ContentPanel();
 		panel.setLayout(new FitLayout());
-		panel.setSpacing(5);
-		panel.add(createToolBar());
+		panel.setTopComponent(createToolBar());
 		panel.add(grid);
+		panel.setSize("100%", "100%");
 		return panel;
 	}
 
@@ -76,7 +76,6 @@ public class Feladat7 extends TabItem {
 				newItem.set("price", randomPrice);
 				newItem.set("orderDate", new Date());
 				store.add(newItem);
-				grid.getView().refresh(true);
 			}
 		});
 

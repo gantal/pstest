@@ -2,8 +2,8 @@ package hu.gantal.ps.task.client.tabitems;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
@@ -48,8 +48,7 @@ public class Feladat6 extends TabItem {
 		buttonSendGet = new Button("GET Küldés");
 		buttonSendPost = new Button("POST Küldés");
 
-		VerticalPanel panel = new VerticalPanel();
-		panel.setSpacing(5);
+		ContentPanel panel = new ContentPanel();
 		panel.add(new LabelField("Első szám:"));
 		panel.add(textNumber1);
 		panel.add(new LabelField("Második szám:"));

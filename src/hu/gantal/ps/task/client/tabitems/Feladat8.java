@@ -4,9 +4,9 @@ import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -27,18 +27,19 @@ import java.util.ArrayList;
 
 public class Feladat8 extends TabItem {
 
-	private ListStore<BaseModelData> store;
-	private Grid<BaseModelData> grid;
+    private ListStore<BaseModelData> store;
+    private Grid<BaseModelData> grid;
 
-	public Feladat8() {
-		super("Feladat8");
-		setLayout(new FitLayout());
+    public Feladat8() {
+        super("Feladat8");
 		setSize(600, 400);
+		setLayout(new FitLayout());
 		initGrid();
 		add(createMainPanel());
-	}
+		layout();
+    }
 
-	private void initGrid() {
+    private void initGrid() {
 		store = new ListStore<BaseModelData>();
 
 		List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
@@ -55,118 +56,116 @@ public class Feladat8 extends TabItem {
 		grid.setAutoExpandColumn("product");
 		grid.setSelectionModel(new GridSelectionModel<BaseModelData>());
 		grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-	}
+    }
 
-	private VerticalPanel createMainPanel() {
-		VerticalPanel panel = new VerticalPanel();
+    private ContentPanel createMainPanel() {
+		ContentPanel panel = new ContentPanel();
 		panel.setLayout(new FitLayout());
-		panel.setSpacing(5);
-
-		panel.add(createToolBar());
+		panel.setTopComponent(createToolBar());
 		panel.add(grid);
-
+		panel.setSize("100%", "100%");
 		return panel;
-	}
+    }
 
-	private ToolBar createToolBar() {
-		ToolBar toolBar = new ToolBar();
+    private ToolBar createToolBar() {
+        ToolBar toolBar = new ToolBar();
 
-		Button buttonCreate = new Button("Új", new SelectionListener<ButtonEvent>() {
-			@Override
-			public void componentSelected(ButtonEvent ce) {
-				openCreateWindow();
-			}
-		});
+        Button buttonCreate = new Button("Új", new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                openCreateWindow();
+            }
+        });
 
-		Button buttonDelete = new Button("Törlés", new SelectionListener<ButtonEvent>() {
-			@Override
-			public void componentSelected(ButtonEvent ce) {
-				BaseModelData selected = grid.getSelectionModel().getSelectedItem();
-				if (selected != null) {
-					store.remove(selected);
-				}
-			}
-		});
+        Button buttonDelete = new Button("Törlés", new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                BaseModelData selected = grid.getSelectionModel().getSelectedItem();
+                if (selected != null) {
+                    store.remove(selected);
+                }
+            }
+        });
 
-		toolBar.add(buttonCreate);
-		toolBar.add(buttonDelete);
+        toolBar.add(buttonCreate);
+        toolBar.add(buttonDelete);
 
-		return toolBar;
-	}
+        return toolBar;
+    }
 
-	private void openCreateWindow() {
-		final Window window = new Window();
-		window.setHeaderVisible(true);
-		window.setHeading("Új tétel hozzáadása");
-		window.setModal(true);
-		window.setSize(300, 250);
-		window.setLayout(new FitLayout());
+    private void openCreateWindow() {
+        final Window window = new Window();
+        window.setHeaderVisible(true);
+        window.setHeading("Új tétel hozzáadása");
+        window.setModal(true);
+        window.setSize(300, 250);
+        window.setLayout(new FitLayout());
 
-		final FormPanel form = new FormPanel();
-		form.setFrame(true);
-		form.setLabelWidth(100);
+        final FormPanel form = new FormPanel();
+        form.setFrame(true);
+        form.setLabelWidth(100);
 
-		final TextField<String> productField = new TextField<String>();
-		productField.setFieldLabel("Termék");
-		productField.setAllowBlank(false);
+        final TextField<String> productField = new TextField<String>();
+        productField.setFieldLabel("Termék");
+        productField.setAllowBlank(false);
 
-		final NumberField quantityField = new NumberField();
-		quantityField.setFieldLabel("Mennyiség");
-		quantityField.setPropertyEditorType(Integer.class);
-		quantityField.setAllowBlank(false);
-		quantityField.setAllowNegative(false);
-		quantityField.setMinValue(1);
+        final NumberField quantityField = new NumberField();
+        quantityField.setFieldLabel("Mennyiség");
+        quantityField.setPropertyEditorType(Integer.class);
+        quantityField.setAllowBlank(false);
+        quantityField.setAllowNegative(false);
+        quantityField.setMinValue(1);
 
-		final NumberField priceField = new NumberField();
-		priceField.setFieldLabel("Egységár");
-		priceField.setPropertyEditorType(Double.class);
-		priceField.setAllowBlank(false);
-		priceField.setAllowNegative(false);
-		priceField.setMinValue(1.0);
+        final NumberField priceField = new NumberField();
+        priceField.setFieldLabel("Egységár");
+        priceField.setPropertyEditorType(Double.class);
+        priceField.setAllowBlank(false);
+        priceField.setAllowNegative(false);
+        priceField.setMinValue(1.0);
 
-		final DateField orderDateField = new DateField();
-		orderDateField.setFieldLabel("Rendelés dátuma");
-		orderDateField.setAllowBlank(false);
-		orderDateField.setValue(new Date());
+        final DateField orderDateField = new DateField();
+        orderDateField.setFieldLabel("Rendelés dátuma");
+        orderDateField.setAllowBlank(false);
+        orderDateField.setValue(new Date());
 
-		Button cancelButton = new Button("Mégse", new SelectionListener<ButtonEvent>() {
-			@Override
-			public void componentSelected(ButtonEvent ce) {
-				window.hide();
-			}
-		});
+        Button cancelButton = new Button("Mégse", new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                window.hide();
+            }
+        });
 
-		Button saveButton = new Button("Mentés", new SelectionListener<ButtonEvent>() {
-			@Override
-			public void componentSelected(ButtonEvent ce) {
-				for (Field<?> f : form.getFields()) {
-					f.validate();
-				}
-				if (!form.isValid()) {
-					return;
-				}
+        Button saveButton = new Button("Mentés", new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                for (Field<?> f : form.getFields()) {
+                    f.validate();
+                }
+                if (!form.isValid()) {
+                    return;
+                }
 
-				BaseModelData newItem = new BaseModelData();
-				newItem.set("id", store.getCount() + 1);
-				newItem.set("product", productField.getValue());
-				newItem.set("quantity", quantityField.getValue());
-				newItem.set("price", priceField.getValue());
-				newItem.set("orderDate", orderDateField.getValue());
+                BaseModelData newItem = new BaseModelData();
+                newItem.set("id", store.getCount() + 1);
+                newItem.set("product", productField.getValue());
+                newItem.set("quantity", quantityField.getValue());
+                newItem.set("price", priceField.getValue());
+                newItem.set("orderDate", orderDateField.getValue());
 
-				store.add(newItem);
-				window.hide();
-			}
-		});
+                store.add(newItem);
+                window.hide();
+            }
+        });
 
-		form.add(productField);
-		form.add(quantityField);
-		form.add(priceField);
-		form.add(orderDateField);
+        form.add(productField);
+        form.add(quantityField);
+        form.add(priceField);
+        form.add(orderDateField);
 
-		form.addButton(cancelButton);
-		form.addButton(saveButton);
+        form.addButton(cancelButton);
+        form.addButton(saveButton);
 
-		window.add(form);
-		window.show();
-	}
+        window.add(form);
+        window.show();
+    }
 }
