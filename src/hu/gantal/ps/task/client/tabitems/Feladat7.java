@@ -53,6 +53,7 @@ public class Feladat7 extends TabItem {
 
 	private ContentPanel createMainPanel() {
 		ContentPanel panel = new ContentPanel();
+        panel.setHeading("Feladat7");
 		panel.setLayout(new FitLayout());
 		panel.setTopComponent(createToolBar());
 		panel.add(grid);

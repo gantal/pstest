@@ -23,8 +23,6 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -74,6 +72,7 @@ public class Feladat9 extends TabItem {
 
 	private ContentPanel createMainPanel() {
 		ContentPanel panel = new ContentPanel();
+        panel.setHeading("Feladat9");
 		panel.setLayout(new FitLayout());
 		panel.setTopComponent(createToolBar());
 		panel.add(grid);
@@ -139,7 +138,6 @@ public class Feladat9 extends TabItem {
 			void onSave(BaseModelData updatedModel);
 		}
 
-		private BaseModelData item;
 		private SaveListener saveListener;
 
 		private final FormPanel form;
@@ -149,8 +147,6 @@ public class Feladat9 extends TabItem {
 		private final DateField orderDateField;
 
 		public EditItemWindow(final BaseModelData item, String title) {
-			this.item = item;
-
 			setHeading(title);
 			setModal(true);
 			setSize(300, 250);
