@@ -11,6 +11,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 import hu.gantal.ps.task.client.tabitems.Feladat1;
 import hu.gantal.ps.task.client.tabitems.Feladat10;
+import hu.gantal.ps.task.client.tabitems.Feladat11;
 import hu.gantal.ps.task.client.tabitems.Feladat2;
 import hu.gantal.ps.task.client.tabitems.Feladat3;
 import hu.gantal.ps.task.client.tabitems.Feladat4;
@@ -45,6 +46,7 @@ public class PannonSetTask implements EntryPoint {
 		tp.add(new Feladat8());
 		tp.add(new Feladat9());
 		tp.add(new Feladat10());
+		tp.add(new Feladat11());
 		cp.add(tp);
 		Window.addResizeHandler(new ResizeHandler() {
 			@Override

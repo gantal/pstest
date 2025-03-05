@@ -10,13 +10,7 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.DateField;
-import com.extjs.gxt.ui.client.widget.form.Field;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.NumberField;
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
@@ -31,6 +25,7 @@ import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
+import hu.gantal.ps.task.client.components.EditItemWindow;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import java.util.ArrayList;
@@ -204,96 +199,5 @@ public class Feladat10 extends TabItem {
             }
         });
         w.show();
-    }
-
-    public static class EditItemWindow extends Window {
-
-        public interface SaveListener {
-            void onSave(BaseModelData updatedModel);
-        }
-
-        private SaveListener saveListener;
-
-        private final FormPanel form;
-        private final TextField<String> productField;
-        private final NumberField quantityField;
-        private final NumberField priceField;
-        private final DateField orderDateField;
-
-        public EditItemWindow(final BaseModelData item, String title) {
-            setHeading(title);
-            setModal(true);
-            setSize(300, 250);
-            setLayout(new FitLayout());
-
-            form = new FormPanel();
-            form.setFrame(true);
-            form.setLabelWidth(100);
-
-            productField = new TextField<String>();
-            productField.setFieldLabel("Termék");
-            productField.setAllowBlank(false);
-            productField.setValue((String) item.get("product"));
-
-            quantityField = new NumberField();
-            quantityField.setFieldLabel("Mennyiség");
-            quantityField.setAllowBlank(false);
-            quantityField.setAllowNegative(false);
-            quantityField.setValue((Number) item.get("quantity"));
-
-            priceField = new NumberField();
-            priceField.setFieldLabel("Egységár");
-            priceField.setAllowBlank(false);
-            priceField.setAllowNegative(false);
-            priceField.setValue((Number) item.get("price"));
-
-            orderDateField = new DateField();
-            orderDateField.setFieldLabel("Rendelés dátuma");
-            orderDateField.setAllowBlank(false);
-            orderDateField.setValue((Date) item.get("orderDate"));
-
-            form.add(productField);
-            form.add(quantityField);
-            form.add(priceField);
-            form.add(orderDateField);
-
-            Button cancelButton = new Button("Mégse", new SelectionListener<ButtonEvent>() {
-                @Override
-                public void componentSelected(ButtonEvent ce) {
-                    hide();
-                }
-            });
-            Button saveButton = new Button("Mentés", new SelectionListener<ButtonEvent>() {
-                @Override
-                public void componentSelected(ButtonEvent ce) {
-                    for (Field<?> f : form.getFields()) {
-                        f.validate();
-                    }
-                    if (!form.isValid()) {
-                        return;
-                    }
-
-                    item.set("product", productField.getValue());
-                    item.set("quantity", quantityField.getValue());
-                    item.set("price", priceField.getValue());
-                    item.set("orderDate", orderDateField.getValue());
-
-                    if (saveListener != null) {
-                        saveListener.onSave(item);
-                    }
-
-                    hide();
-                }
-            });
-
-            form.addButton(cancelButton);
-            form.addButton(saveButton);
-
-            add(form);
-        }
-
-        public void setSaveListener(SaveListener listener) {
-            this.saveListener = listener;
-        }
     }
 }
