@@ -213,9 +213,16 @@ public class Feladat12 extends TabItem {
 	    }
 	}
 
-	private double getSafeInteger(Object obj) {
+	private int getSafeInteger(Object obj) {
 	    if (obj instanceof Number) {
 	        return ((Number) obj).intValue();
+	    } else if (obj instanceof String) {
+	        try {
+	            return Integer.parseInt((String) obj);
+	        } catch (NumberFormatException e) {
+	            System.out.println("HIBA: Nem sikerült konvertálni Integer típusra: " + obj);
+	            return 0;
+	        }
 	    }
 	    return 0;
 	}
