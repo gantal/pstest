@@ -48,8 +48,17 @@ public class EditItemWindow extends Window {
         quantityField.setAllowBlank(false);
         quantityField.setAllowNegative(false);
         Object quantityValue = item.get("quantity");
-        quantityField.setValue(quantityValue != null ? Integer.parseInt(quantityValue.toString()) : 0);
-
+        if (quantityValue != null) {
+            try {
+                if (quantityValue instanceof Number) {
+                    quantityField.setValue(((Number) quantityValue).intValue());
+                } else {
+                    quantityField.setValue(Integer.parseInt(quantityValue.toString()));
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Hibás quantity érték: " + quantityValue);
+            }
+        }
         priceField = new NumberField();
         priceField.setFieldLabel("Egységár");
         priceField.setAllowBlank(false);
