@@ -24,6 +24,8 @@ import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import hu.gantal.ps.task.client.components.EditItemWindow;
+import hu.gantal.ps.task.client.utils.NumberUtil;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -139,10 +141,10 @@ public class Feladat12 extends TabItem {
 
 	    try {
 	        JSONObject jsonData = new JSONObject();
-	        jsonData.put("id", new JSONNumber(getSafeInteger(item.get("id"))));
+	        jsonData.put("id", new JSONNumber(NumberUtil.getSafeInteger(item.get("id"))));
 	        jsonData.put("product", new JSONString((String) item.get("product")));
-	        jsonData.put("quantity", new JSONNumber(getSafeInteger(item.get("quantity"))));
-	        jsonData.put("price", new JSONNumber(getSafeDouble(item.get("price"))));
+	        jsonData.put("quantity", new JSONNumber(NumberUtil.getSafeInteger(item.get("quantity"))));
+	        jsonData.put("price", new JSONNumber(NumberUtil.getSafeDouble(item.get("price"))));
 	        jsonData.put("orderDate", new JSONString((String) item.get("orderDate")));
             
 	        builder.sendRequest(jsonData.toString(), new RequestCallback() {
@@ -188,10 +190,10 @@ public class Feladat12 extends TabItem {
 
 	    try {
 	        JSONObject jsonData = new JSONObject();
-	        jsonData.put("id", new JSONNumber(getSafeInteger(item.get("id"))));
+	        jsonData.put("id", new JSONNumber(NumberUtil.getSafeInteger(item.get("id"))));
 	        jsonData.put("product", new JSONString((String) item.get("product")));
-	        jsonData.put("quantity", new JSONNumber(getSafeInteger(item.get("quantity"))));
-	        jsonData.put("price", new JSONNumber(getSafeDouble(item.get("price"))));
+	        jsonData.put("quantity", new JSONNumber(NumberUtil.getSafeInteger(item.get("quantity"))));
+	        jsonData.put("price", new JSONNumber(NumberUtil.getSafeDouble(item.get("price"))));
 	        jsonData.put("orderDate", new JSONString((String) item.get("orderDate")));
 
 	        builder.sendRequest(jsonData.toString(), new RequestCallback() {
@@ -213,26 +215,6 @@ public class Feladat12 extends TabItem {
 	    }
 	}
 
-	private int getSafeInteger(Object obj) {
-	    if (obj instanceof Number) {
-	        return ((Number) obj).intValue();
-	    } else if (obj instanceof String) {
-	        try {
-	            return Integer.parseInt((String) obj);
-	        } catch (NumberFormatException e) {
-	            System.out.println("HIBA: Nem sikerült konvertálni Integer típusra: " + obj);
-	            return 0;
-	        }
-	    }
-	    return 0;
-	}
-
-	private double getSafeDouble(Object obj) {
-	    if (obj instanceof Number) {
-	        return ((Number) obj).doubleValue();
-	    }
-	    return 0.0;
-	}
 	private void openEditWindow(final BaseModelData item) {
 		EditItemWindow w = new EditItemWindow(item, "Tétel szerkesztése");
 		w.setSaveListener(new EditItemWindow.SaveListener() {
