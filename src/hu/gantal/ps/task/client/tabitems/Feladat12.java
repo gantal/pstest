@@ -15,6 +15,9 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.*;
 import com.google.gwt.i18n.client.NumberFormat;
+import com.google.gwt.json.client.JSONNumber;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.GridEvent;
@@ -135,12 +138,14 @@ public class Feladat12 extends TabItem {
 	    builder.setHeader("Content-Type", "application/json");
 
 	    try {
-	        String jsonData = "{\"product\": \"" + item.get("product") + 
-	                          "\", \"quantity\": " + item.get("quantity") + 
-	                          ", \"price\": " + item.get("price") + 
-	                          ", \"orderDate\": \"" + item.get("orderDate") + "\"}";
-
-	        builder.sendRequest(jsonData, new RequestCallback() {
+	        JSONObject jsonData = new JSONObject();
+	        jsonData.put("id", new JSONNumber(getSafeInteger(item.get("id"))));
+	        jsonData.put("product", new JSONString((String) item.get("product")));
+	        jsonData.put("quantity", new JSONNumber(getSafeInteger(item.get("quantity"))));
+	        jsonData.put("price", new JSONNumber(getSafeDouble(item.get("price"))));
+	        jsonData.put("orderDate", new JSONString((String) item.get("orderDate")));
+            
+	        builder.sendRequest(jsonData.toString(), new RequestCallback() {
 	            @Override
 	            public void onResponseReceived(Request request, Response response) {
 	                if (response.getStatusCode() == 200) {
@@ -182,13 +187,14 @@ public class Feladat12 extends TabItem {
 	    builder.setHeader("Content-Type", "application/json");
 
 	    try {
-	        String jsonData = "{\"id\": " + item.get("id") +
-	                          ", \"product\": \"" + item.get("product") +
-	                          "\", \"quantity\": " + item.get("quantity") +
-	                          ", \"price\": " + item.get("price") +
-	                          ", \"orderDate\": \"" + item.get("orderDate") + "\"}";
+	        JSONObject jsonData = new JSONObject();
+	        jsonData.put("id", new JSONNumber(getSafeInteger(item.get("id"))));
+	        jsonData.put("product", new JSONString((String) item.get("product")));
+	        jsonData.put("quantity", new JSONNumber(getSafeInteger(item.get("quantity"))));
+	        jsonData.put("price", new JSONNumber(getSafeDouble(item.get("price"))));
+	        jsonData.put("orderDate", new JSONString((String) item.get("orderDate")));
 
-	        builder.sendRequest(jsonData, new RequestCallback() {
+	        builder.sendRequest(jsonData.toString(), new RequestCallback() {
 	            @Override
 	            public void onResponseReceived(Request request, Response response) {
 	                if (response.getStatusCode() == 200) {
@@ -207,7 +213,19 @@ public class Feladat12 extends TabItem {
 	    }
 	}
 
+	private double getSafeInteger(Object obj) {
+	    if (obj instanceof Number) {
+	        return ((Number) obj).intValue();
+	    }
+	    return 0;
+	}
 
+	private double getSafeDouble(Object obj) {
+	    if (obj instanceof Number) {
+	        return ((Number) obj).doubleValue();
+	    }
+	    return 0.0;
+	}
 	private void openEditWindow(final BaseModelData item) {
 		EditItemWindow w = new EditItemWindow(item, "Tétel szerkesztése");
 		w.setSaveListener(new EditItemWindow.SaveListener() {
