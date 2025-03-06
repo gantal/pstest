@@ -2,6 +2,7 @@ package hu.gantal.ps.task.client.tabitems;
 
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -26,6 +27,7 @@ import com.google.gwt.http.client.RequestException;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 import hu.gantal.ps.task.client.components.EditItemWindow;
+
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import java.util.ArrayList;
@@ -34,8 +36,8 @@ import java.util.List;
 
 public class Feladat10 extends TabItem {
 
-    private ListStore<BaseModelData> store;
-    private Grid<BaseModelData> grid;
+    private ListStore<ModelData> store;
+    private Grid<ModelData> grid;
 
     public Feladat10() {
         super("Feladat10");
@@ -48,7 +50,7 @@ public class Feladat10 extends TabItem {
     }
 
     private void initGrid() {
-        store = new ListStore<BaseModelData>();
+        store = new ListStore<ModelData>();
 
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
         configs.add(new ColumnConfig("id", "Azonosító", 50));
@@ -59,16 +61,16 @@ public class Feladat10 extends TabItem {
 
         ColumnModel cm = new ColumnModel(configs);
 
-        grid = new Grid<BaseModelData>(store, cm);
+        grid = new Grid<ModelData>(store, cm);
         grid.setBorders(true);
         grid.setAutoExpandColumn("product");
-        grid.setSelectionModel(new GridSelectionModel<BaseModelData>());
+        grid.setSelectionModel(new GridSelectionModel<ModelData>());
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
-        grid.addListener(Events.RowDoubleClick, new Listener<GridEvent<BaseModelData>>() {
+        grid.addListener(Events.RowDoubleClick, new Listener<GridEvent<ModelData>>() {
             @Override
-            public void handleEvent(GridEvent<BaseModelData> be) {
-                BaseModelData selectedItem = be.getModel();
+            public void handleEvent(GridEvent<ModelData> be) {
+            	ModelData selectedItem = be.getModel();
                 if (selectedItem != null) {
                     openEditWindow(selectedItem);
                 }
@@ -98,7 +100,7 @@ public class Feladat10 extends TabItem {
         Button buttonDelete = new Button("Törlés", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                BaseModelData selected = grid.getSelectionModel().getSelectedItem();
+            	ModelData selected = grid.getSelectionModel().getSelectedItem();
                 if (selected != null) {
                     store.remove(selected);
                 }
@@ -175,29 +177,29 @@ public class Feladat10 extends TabItem {
         return null;
     }
 
-    private void openCreateWindow() {
-        final BaseModelData newItem = new BaseModelData();
-        newItem.set("id", store.getCount() + 1); 
-        newItem.set("orderDate", new Date());
+	private void openCreateWindow() {
+		final BaseModelData newItem = new BaseModelData();
+		newItem.set("id", store.getCount() + 1);
+		newItem.set("orderDate", new Date());
 
-        EditItemWindow w = new EditItemWindow(newItem, "Új tétel hozzáadása");
-        w.setSaveListener(new EditItemWindow.SaveListener() {
-            @Override
-            public void onSave(BaseModelData updatedModel) {
-                store.add(updatedModel);
-            }
-        });
-        w.show();
-    }
+		EditItemWindow w = new EditItemWindow(newItem, "Új tétel hozzáadása");
+		w.setSaveListener(new EditItemWindow.SaveListener() {
+			@Override
+			public void onSave(ModelData updatedModel) {
+				store.add(updatedModel);
+			}
+		});
+		w.show();
+	}
 
-    private void openEditWindow(final BaseModelData item) {
-        EditItemWindow w = new EditItemWindow(item, "Tétel szerkesztése");
-        w.setSaveListener(new EditItemWindow.SaveListener() {
-            @Override
-            public void onSave(BaseModelData updatedModel) {
-                store.update(updatedModel);
-            }
-        });
-        w.show();
-    }
+	private void openEditWindow(final ModelData item) {
+		EditItemWindow w = new EditItemWindow(item, "Tétel szerkesztése");
+		w.setSaveListener(new EditItemWindow.SaveListener() {
+			@Override
+			public void onSave(ModelData updatedModel) {
+				store.update(updatedModel);
+			}
+		});
+		w.show();
+	}
 }

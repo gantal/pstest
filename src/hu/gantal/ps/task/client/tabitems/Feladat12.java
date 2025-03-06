@@ -32,8 +32,8 @@ import java.util.List;
 
 public class Feladat12 extends TabItem {
 
-	private ListStore<BaseModelData> store;
-	private Grid<BaseModelData> grid;
+	private ListStore<ModelData> store;
+	private Grid<ModelData> grid;
 
 	public Feladat12() {
 		super("Feladat12");
@@ -46,7 +46,7 @@ public class Feladat12 extends TabItem {
 	}
 
 	private void initGrid() {
-		store = new ListStore<BaseModelData>();
+		store = new ListStore<ModelData>();
 
 		List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 		configs.add(new ColumnConfig("id", "Azonosító", 50));
@@ -59,16 +59,16 @@ public class Feladat12 extends TabItem {
 
 		ColumnModel cm = new ColumnModel(configs);
 
-		grid = new Grid<BaseModelData>(store, cm);
+		grid = new Grid<ModelData>(store, cm);
 		grid.setBorders(true);
 		grid.setAutoExpandColumn("product");
-		grid.setSelectionModel(new GridSelectionModel<BaseModelData>());
+		grid.setSelectionModel(new GridSelectionModel<ModelData>());
 		grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
-		grid.addListener(Events.RowDoubleClick, new Listener<GridEvent<BaseModelData>>() {
+		grid.addListener(Events.RowDoubleClick, new Listener<GridEvent<ModelData>>() {
 			@Override
-			public void handleEvent(GridEvent<BaseModelData> be) {
-				BaseModelData selectedItem = be.getModel();
+			public void handleEvent(GridEvent<ModelData> be) {
+				BaseModelData selectedItem = (BaseModelData) be.getModel();
 				if (selectedItem != null) {
 					openEditWindow(selectedItem);
 				}
@@ -98,7 +98,7 @@ public class Feladat12 extends TabItem {
 		Button buttonDelete = new Button("Törlés", new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent ce) {
-				BaseModelData selected = grid.getSelectionModel().getSelectedItem();
+				ModelData selected = grid.getSelectionModel().getSelectedItem();
 				if (selected != null) {
 					store.remove(selected);
 				}
@@ -127,13 +127,13 @@ public class Feladat12 extends TabItem {
 				modelType);
 		BaseListLoader<ListLoadResult<BaseModelData>> loader = new BaseListLoader<ListLoadResult<BaseModelData>>(proxy,
 				reader);
-		store = new ListStore<BaseModelData>(loader);
+		store = new ListStore<ModelData>(loader);
 		grid.reconfigure(store, grid.getColumnModel());
 
 		loader.load();
 	}
 	
-	private void saveNewItemToServer(final BaseModelData item) {
+	private void saveNewItemToServer(final ModelData item) {
 	    String url = GWT.getHostPageBaseURL() + "feladat12_add.php";
 
 	    RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, url);
@@ -175,14 +175,14 @@ public class Feladat12 extends TabItem {
 		EditItemWindow w = new EditItemWindow(newItem, "Új tétel hozzáadása");
 		w.setSaveListener(new EditItemWindow.SaveListener() {
 		    @Override
-		    public void onSave(BaseModelData updatedModel) {
+		    public void onSave(ModelData updatedModel) {
 		        saveNewItemToServer(updatedModel);
 		    }
 		});
 		w.show();
 	}
 	
-	private void updateItemOnServer(final BaseModelData item) {
+	private void updateItemOnServer(final ModelData item) {
 	    String url = GWT.getHostPageBaseURL() + "feladat12_update.php";
 
 	    RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, url);
@@ -219,7 +219,7 @@ public class Feladat12 extends TabItem {
 		EditItemWindow w = new EditItemWindow(item, "Tétel szerkesztése");
 		w.setSaveListener(new EditItemWindow.SaveListener() {
 			@Override
-			public void onSave(BaseModelData updatedModel) {
+			public void onSave(ModelData updatedModel) {
 				 updateItemOnServer(updatedModel);
 			}
 		});

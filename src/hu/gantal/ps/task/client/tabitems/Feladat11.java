@@ -26,8 +26,8 @@ import java.util.List;
 
 public class Feladat11 extends TabItem {
 
-	private ListStore<BaseModelData> store;
-	private Grid<BaseModelData> grid;
+	private ListStore<ModelData> store;
+	private Grid<ModelData> grid;
 
 	public Feladat11() {
 		super("Feladat11");
@@ -40,7 +40,7 @@ public class Feladat11 extends TabItem {
 	}
 
 	private void initGrid() {
-		store = new ListStore<BaseModelData>();
+		store = new ListStore<ModelData>();
 
 		List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 		configs.add(new ColumnConfig("id", "Azonosító", 50));
@@ -51,10 +51,10 @@ public class Feladat11 extends TabItem {
 
 		ColumnModel cm = new ColumnModel(configs);
 
-		grid = new Grid<BaseModelData>(store, cm);
+		grid = new Grid<ModelData>(store, cm);
 		grid.setBorders(true);
 		grid.setAutoExpandColumn("product");
-		grid.setSelectionModel(new GridSelectionModel<BaseModelData>());
+		grid.setSelectionModel(new GridSelectionModel<ModelData>());
 		grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
 		grid.addListener(Events.RowDoubleClick, new Listener<GridEvent<BaseModelData>>() {
@@ -90,7 +90,7 @@ public class Feladat11 extends TabItem {
 		Button buttonDelete = new Button("Törlés", new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent ce) {
-				BaseModelData selected = grid.getSelectionModel().getSelectedItem();
+				ModelData selected = grid.getSelectionModel().getSelectedItem();
 				if (selected != null) {
 					store.remove(selected);
 				}
@@ -115,11 +115,11 @@ public class Feladat11 extends TabItem {
 
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
 		HttpProxy<String> proxy = new HttpProxy<String>(builder);
-		JsonReader<ListLoadResult<BaseModelData>> reader = new JsonLoadResultReader<ListLoadResult<BaseModelData>>(
+		JsonReader<ListLoadResult<ModelData>> reader = new JsonLoadResultReader<ListLoadResult<ModelData>>(
 				modelType);
-		BaseListLoader<ListLoadResult<BaseModelData>> loader = new BaseListLoader<ListLoadResult<BaseModelData>>(proxy,
+		BaseListLoader<ListLoadResult<ModelData>> loader = new BaseListLoader<ListLoadResult<ModelData>>(proxy,
 				reader);
-		store = new ListStore<BaseModelData>(loader);
+		store = new ListStore<ModelData>(loader);
 		grid.reconfigure(store, grid.getColumnModel());
 
 		loader.load();
@@ -133,7 +133,7 @@ public class Feladat11 extends TabItem {
 		EditItemWindow w = new EditItemWindow(newItem, "Új tétel hozzáadása");
 		w.setSaveListener(new EditItemWindow.SaveListener() {
 			@Override
-			public void onSave(BaseModelData updatedModel) {
+			public void onSave(ModelData updatedModel) {
 				store.add(updatedModel);
 			}
 		});
@@ -144,7 +144,7 @@ public class Feladat11 extends TabItem {
 		EditItemWindow w = new EditItemWindow(item, "Tétel szerkesztése");
 		w.setSaveListener(new EditItemWindow.SaveListener() {
 			@Override
-			public void onSave(BaseModelData updatedModel) {
+			public void onSave(ModelData updatedModel) {
 				store.update(updatedModel);
 			}
 		});
