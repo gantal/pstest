@@ -58,7 +58,7 @@ import hu.gantal.ps.task.client.components.EditItemWindow.SaveListener;
 import hu.gantal.ps.task.client.utils.NumberUtil;
 
 public class Feladat13 extends TabItem {
-	private static final int PAGE_SIZE = 2;
+	private static final int PAGE_SIZE = 5;
 	private static final DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat("yyyy-MM-dd");
 	private static final String DATA_URL = GWT.getHostPageBaseURL() + "feladat13_data.php";
 	private static final String CREATE_URL = GWT.getHostPageBaseURL() + "feladat13_create.php";
