@@ -1,6 +1,7 @@
 package hu.gantal.ps.task.client.tabitems;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
@@ -21,6 +22,7 @@ import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.DateField;
+import com.extjs.gxt.ui.client.widget.form.DateTimePropertyEditor;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
@@ -63,67 +65,74 @@ public class Feladat18 extends TabItem {
 
 	public Feladat18() {
 		super("Feladat18");
-	        setSize(1000, 600);
-	        setLayout(new FitLayout());
-	        add(createMainPanel());
-	        loadData(SOURCE_GRID_URL, leftStore);
-	        loadData(TARGET_GRID_URL, rightStore);
-	        layout();
-	    }
+		setSize(1000, 600);
+		setLayout(new FitLayout());
+		add(createMainPanel());
+		loadData(SOURCE_GRID_URL, leftStore);
+		loadData(TARGET_GRID_URL, rightStore);
+		layout();
+	}
 
-	    private ContentPanel createMainPanel() {
-	        ContentPanel panel = new ContentPanel();
-	        panel.setHeading("Feladat18");
-	        panel.setLayout(new RowLayout(Orientation.HORIZONTAL));
+	private ContentPanel createMainPanel() {
+		ContentPanel panel = new ContentPanel();
+		panel.setHeading("Feladat18");
+		panel.setLayout(new RowLayout(Orientation.HORIZONTAL));
 
-	        leftStore = new ListStore<ModelData>();
-	        rightStore = new ListStore<ModelData>();
+		leftStore = new ListStore<ModelData>();
+		rightStore = new ListStore<ModelData>();
 
-	        leftGrid = setupGrid(leftStore, "Bal tábla");
-	        rightGrid = setupGrid(rightStore, "Jobb tábla");
+		leftGrid = setupGrid(leftStore, "Bal tábla");
+		rightGrid = setupGrid(rightStore, "Jobb tábla");
 
-	        panel.add(leftGrid, new RowData(0.5, 1, new Margins(6)));
-	        panel.add(rightGrid, new RowData(0.5, 1, new Margins(6, 6, 6, 0)));
+		panel.add(leftGrid, new RowData(0.5, 1, new Margins(6)));
+		panel.add(rightGrid, new RowData(0.5, 1, new Margins(6, 6, 6, 0)));
 
-	        enableDragAndDrop(leftGrid, rightGrid, SOURCE_GRID_URL, TARGET_GRID_URL);
-	        enableDragAndDrop(rightGrid, leftGrid, TARGET_GRID_URL, SOURCE_GRID_URL);
+		enableDragAndDrop(leftGrid, rightGrid, SOURCE_GRID_URL, TARGET_GRID_URL);
+		enableDragAndDrop(rightGrid, leftGrid, TARGET_GRID_URL, SOURCE_GRID_URL);
 
-	        panel.setTopComponent(createToolBar());
+		panel.setTopComponent(createToolBar());
 
-	        return panel;
-	    }
-	    
-	    private Grid<ModelData> setupGrid(ListStore<ModelData> store, String title) {
-	        List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
-	        columns.add(new ColumnConfig("id", "ID", 50));
-	        TextField<String> productField = new TextField<String>();
-	        ColumnConfig productColumn = new ColumnConfig("product", "Termék", 150);
-	        productColumn.setEditor(new CellEditor(productField));
-	        columns.add(productColumn);
-	        NumberField quantityField = new NumberField();
-	        ColumnConfig quantityColumn = new ColumnConfig("quantity", "Mennyiség", 80);
-	        productColumn.setEditor(new CellEditor(quantityField));
-	        columns.add(quantityColumn);
-	        NumberField priceField = new NumberField();
-	        ColumnConfig priceColumn = new ColumnConfig("price", "Egységár", 100);
-	        priceColumn.setEditor(new CellEditor(priceField));
-	        columns.add(priceColumn);
-	        DateField orderDateField = new DateField();
-	        ColumnConfig orderDateColumn = new ColumnConfig("orderDate", "Dátum", 120);
-	        orderDateColumn.setEditor(new CellEditor(orderDateField));
-	        columns.add(orderDateColumn);
+		return panel;
+	}
 
-	        ColumnModel cm = new ColumnModel(columns);
-	        final Grid<ModelData> grid = new Grid<ModelData>(store, cm);  
-	        grid.setSize(500, 600);
-	        grid.setBorders(true);
-	        RowEditor<ModelData> rowEditor = new RowEditor<ModelData>();
-	       
-	        rowEditor.setClicksToEdit(EditorGrid.ClicksToEdit.TWO);
-	        grid.addPlugin(rowEditor);
-	        return grid;
-	    }
+	private Grid<ModelData> setupGrid(ListStore<ModelData> store, String title) {
+		List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
+		columns.add(new ColumnConfig("id", "ID", 50));
+
+		TextField<String> productField = new TextField<String>();
+		ColumnConfig productColumn = new ColumnConfig("product", "Termék", 150);
+		productColumn.setEditor(new CellEditor(productField));
+		columns.add(productColumn);
+
+		NumberField quantityField = new NumberField();
+		quantityField.setPropertyEditorType(Integer.class);
+		ColumnConfig quantityColumn = new ColumnConfig("quantity", "Mennyiség", 80);
+		quantityColumn.setEditor(new CellEditor(quantityField));
+		columns.add(quantityColumn);
+
+		NumberField priceField = new NumberField();
+		priceField.setPropertyEditorType(Double.class);
+		ColumnConfig priceColumn = new ColumnConfig("price", "Egységár", 100);
+		priceColumn.setEditor(new CellEditor(priceField));
+		columns.add(priceColumn);
+
+		DateField orderDateField = new DateField();
+		orderDateField.setPropertyEditor(new DateTimePropertyEditor(DATE_FORMAT));
+		ColumnConfig orderDateColumn = new ColumnConfig("orderDate", "Dátum", 120);
+		orderDateColumn.setEditor(new CellEditor(orderDateField));
+		columns.add(orderDateColumn);
+
+		ColumnModel cm = new ColumnModel(columns);
+		final Grid<ModelData> grid = new Grid<ModelData>(store, cm);
+		grid.setSize(500, 600);
+		grid.setBorders(true);
+		RowEditor<ModelData> rowEditor = new RowEditor<ModelData>();
+		rowEditor.setClicksToEdit(EditorGrid.ClicksToEdit.TWO);
+		grid.addPlugin(rowEditor);
+
+		return grid;
+	}
 
 	private void enableDragAndDrop(final Grid<ModelData> sourceGrid, final Grid<ModelData> targetGrid,
 			final String sourceUrl, final String targetUrl) {
@@ -272,12 +281,13 @@ public class Feladat18 extends TabItem {
 		List<ModelData> items = new ArrayList<ModelData>();
 
 		JSONValue jsonValue = JSONParser.parseLenient(jsonText);
-		if (jsonValue == null || jsonValue.isArray() == null) {
+		JSONArray jsonArray = jsonValue.isArray();
+
+		if (jsonArray == null) {
 			MessageBox.alert("Hiba", "JSON formátum érvénytelen!", null);
 			return items;
 		}
 
-		JSONArray jsonArray = jsonValue.isArray();
 		for (int i = 0; i < jsonArray.size(); i++) {
 			JSONObject jsonObject = jsonArray.get(i).isObject();
 			if (jsonObject != null) {
@@ -285,9 +295,23 @@ public class Feladat18 extends TabItem {
 
 				model.set("id", (int) jsonObject.get("id").isNumber().doubleValue());
 				model.set("product", jsonObject.get("product").isString().stringValue());
-				model.set("quantity", (int) jsonObject.get("quantity").isNumber().doubleValue());
-				model.set("price", jsonObject.get("price").isNumber().doubleValue());
-				model.set("orderDate", jsonObject.get("orderDate").isString().stringValue());
+
+				if (jsonObject.get("quantity").isNumber() != null) {
+					model.set("quantity", (int) jsonObject.get("quantity").isNumber().doubleValue());
+				} else {
+					model.set("quantity", 0);
+				}
+
+				if (jsonObject.get("price").isNumber() != null) {
+					model.set("price", jsonObject.get("price").isNumber().doubleValue());
+				} else {
+					model.set("price", 0.0);
+				}
+
+				String dateString = jsonObject.get("orderDate").isString().stringValue();
+				Date date = DATE_FORMAT.parse(dateString);
+
+				model.set("orderDate", date);
 
 				items.add(model);
 			}
@@ -299,53 +323,52 @@ public class Feladat18 extends TabItem {
 	private void loadData(String url, final ListStore<ModelData> store) {
 		leftGrid.mask("Betöltés..");
 		rightGrid.mask("Betöltés..");
-	    RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
-	    try {
-	        builder.sendRequest(null, new RequestCallback() {
-	            public void onResponseReceived(Request request, Response response) {
-	            	leftGrid.unmask();
-	            	rightGrid.unmask();
-	                if (response.getStatusCode() == 200) {
-	                    store.removeAll();
-	                    List<ModelData> parsedData = parseJson(response.getText());
-	                    if (!parsedData.isEmpty()) {
-	                        store.add(parsedData);
-	                        leftGrid.getView().refresh(false);
-	                        rightGrid.getView().refresh(false);
-	                    } else {
-	                        MessageBox.alert("Figyelem", "Nincsenek betöltött adatok!", null);
-	                    }
-	                } else {
-	                    MessageBox.alert("Hiba", "Adatbetöltési hiba: " + response.getStatusText(), null);
-	                }
-	            }
+		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
+		try {
+			builder.sendRequest(null, new RequestCallback() {
+				public void onResponseReceived(Request request, Response response) {
+					leftGrid.unmask();
+					rightGrid.unmask();
+					if (response.getStatusCode() == 200) {
+						store.removeAll();
+						List<ModelData> parsedData = parseJson(response.getText());
+						if (!parsedData.isEmpty()) {
+							store.add(parsedData);
+							leftGrid.getView().refresh(false);
+							rightGrid.getView().refresh(false);
+						} else {
+							MessageBox.alert("Figyelem", "Nincsenek betöltött adatok!", null);
+						}
+					} else {
+						MessageBox.alert("Hiba", "Adatbetöltési hiba: " + response.getStatusText(), null);
+					}
+				}
 
-	            public void onError(Request request, Throwable exception) {
-	            	leftGrid.unmask();
-	            	rightGrid.unmask();
-	                MessageBox.alert("Hiba", "Hálózati hiba történt!", null);
-	            }
-	        });
-	    } catch (RequestException e) {
-	    	leftGrid.unmask();
-	    	rightGrid.unmask();
-	        MessageBox.alert("Hiba", "Hálózati hiba történt!", null);
-	    }
+				public void onError(Request request, Throwable exception) {
+					leftGrid.unmask();
+					rightGrid.unmask();
+					MessageBox.alert("Hiba", "Hálózati hiba történt!", null);
+				}
+			});
+		} catch (RequestException e) {
+			leftGrid.unmask();
+			rightGrid.unmask();
+			MessageBox.alert("Hiba", "Hálózati hiba történt!", null);
+		}
 	}
 
 	private String createJsonFromModel(ModelData item) {
-	    JSONObject jsonObject = new JSONObject();
+		JSONObject jsonObject = new JSONObject();
 
-	    jsonObject.put("id", new JSONNumber(((Integer) item.get("id")).doubleValue()));
-	    jsonObject.put("product", new JSONString((String) item.get("product")));
-	    jsonObject.put("quantity", new JSONNumber(((Integer) item.get("quantity")).doubleValue()));
-	    jsonObject.put("price", new JSONNumber(((Number) item.get("price")).doubleValue())); 
-	    jsonObject.put("orderDate", new JSONString((String) item.get("orderDate")));
+		jsonObject.put("id", new JSONNumber(((Integer) item.get("id")).doubleValue()));
+		jsonObject.put("product", new JSONString((String) item.get("product")));
+		jsonObject.put("quantity", new JSONNumber(((Integer) item.get("quantity")).doubleValue()));
+		jsonObject.put("price", new JSONNumber(((Number) item.get("price")).doubleValue()));
+		jsonObject.put("orderDate", new JSONString((String) item.get("orderDate")));
 
-	    return jsonObject.toString();
+		return jsonObject.toString();
 	}
 
-	
 	public void saveItemToDB(final String url, final ModelData item, final Grid<ModelData> targetGrid) {
 		targetGrid.mask("Mentés folyamatban..");
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, url);
@@ -353,7 +376,7 @@ public class Feladat18 extends TabItem {
 
 		try {
 			String jsonData = createJsonFromModel(item);
-			
+
 			builder.sendRequest(jsonData, new RequestCallback() {
 				public void onResponseReceived(Request request, Response response) {
 					if (response.getStatusCode() == 200) {
@@ -361,8 +384,8 @@ public class Feladat18 extends TabItem {
 						JSONObject jsonObject = jsonValue.isObject();
 
 						if (jsonObject != null && jsonObject.containsKey("success")) {
-						    MessageBox.alert("Siker", "Adat mentése sikeres a cél adatbázisba!", null);
-						    loadData(TARGET_GRID_URL, rightStore);
+							MessageBox.alert("Siker", "Adat mentése sikeres a cél adatbázisba!", null);
+							loadData(TARGET_GRID_URL, rightStore);
 						} else {
 							MessageBox.alert("Hiba", "Mentés sikertelen! Szerver visszautasította az adatot.", null);
 						}
