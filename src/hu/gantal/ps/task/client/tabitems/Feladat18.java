@@ -13,6 +13,7 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.RowEditorEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
@@ -54,8 +55,8 @@ import com.google.gwt.json.client.JSONValue;
 public class Feladat18 extends TabItem {
 	private static final DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat("yyyy-MM-dd");
 
-	private static final String SOURCE_GRID_URL = GWT.getHostPageBaseURL() + "feladat16_source_grid.php";
-	private static final String TARGET_GRID_URL = GWT.getHostPageBaseURL() + "feladat16_target_grid.php";
+	private static final String SOURCE_GRID_URL = GWT.getHostPageBaseURL() + "feladat18_source_grid.php";
+	private static final String TARGET_GRID_URL = GWT.getHostPageBaseURL() + "feladat18_target_grid.php";
 
 	private ListStore<ModelData> leftStore;
 	private ListStore<ModelData> rightStore;
@@ -81,8 +82,8 @@ public class Feladat18 extends TabItem {
 		leftStore = new ListStore<ModelData>();
 		rightStore = new ListStore<ModelData>();
 
-		leftGrid = setupGrid(leftStore, "Bal tábla");
-		rightGrid = setupGrid(rightStore, "Jobb tábla");
+		leftGrid = setupGrid(leftStore, "Bal tábla", SOURCE_GRID_URL);
+		rightGrid = setupGrid(rightStore, "Jobb tábla", TARGET_GRID_URL);
 
 		panel.add(leftGrid, new RowData(0.5, 1, new Margins(6)));
 		panel.add(rightGrid, new RowData(0.5, 1, new Margins(6, 6, 6, 0)));
@@ -95,7 +96,7 @@ public class Feladat18 extends TabItem {
 		return panel;
 	}
 
-	private Grid<ModelData> setupGrid(ListStore<ModelData> store, String title) {
+	private Grid<ModelData> setupGrid(ListStore<ModelData> store, String title, final String url) {
 		List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
 		columns.add(new ColumnConfig("id", "ID", 50));
@@ -129,6 +130,14 @@ public class Feladat18 extends TabItem {
 		grid.setBorders(true);
 		RowEditor<ModelData> rowEditor = new RowEditor<ModelData>();
 		rowEditor.setClicksToEdit(EditorGrid.ClicksToEdit.TWO);
+		rowEditor.addListener(Events.AfterEdit, new Listener<RowEditorEvent>() {
+			@Override
+			public void handleEvent(RowEditorEvent event) {
+				ModelData updatedItem = (ModelData) event.getRecord().getModel();
+				sendPutRequest(url, updatedItem, grid);
+			}
+		});
+
 		grid.addPlugin(rowEditor);
 
 		return grid;
@@ -308,10 +317,19 @@ public class Feladat18 extends TabItem {
 					model.set("price", 0.0);
 				}
 
-				String dateString = jsonObject.get("orderDate").isString().stringValue();
-				Date date = DATE_FORMAT.parse(dateString);
-
-				model.set("orderDate", date);
+				JSONValue dateValue = jsonObject.get("orderDate");
+				if (dateValue != null && dateValue.isString() != null) {
+					String dateString = dateValue.isString().stringValue();
+					try {
+						Date date = DATE_FORMAT.parse(dateString);
+						model.set("orderDate", date);
+					} catch (IllegalArgumentException e) {
+						GWT.log("Hiba: Nem sikerült átalakítani a dátumot: " + dateString);
+						model.set("orderDate", null);
+					}
+				} else {
+					model.set("orderDate", null);
+				}
 
 				items.add(model);
 			}
@@ -364,7 +382,12 @@ public class Feladat18 extends TabItem {
 		jsonObject.put("product", new JSONString((String) item.get("product")));
 		jsonObject.put("quantity", new JSONNumber(((Integer) item.get("quantity")).doubleValue()));
 		jsonObject.put("price", new JSONNumber(((Number) item.get("price")).doubleValue()));
-		jsonObject.put("orderDate", new JSONString((String) item.get("orderDate")));
+		Object orderDateObj = item.get("orderDate");
+		if (orderDateObj instanceof Date) {
+			jsonObject.put("orderDate", new JSONString(DATE_FORMAT.format((Date) orderDateObj)));
+		} else if (orderDateObj instanceof String) {
+			jsonObject.put("orderDate", new JSONString((String) orderDateObj));
+		}
 
 		return jsonObject.toString();
 	}
@@ -385,7 +408,11 @@ public class Feladat18 extends TabItem {
 
 						if (jsonObject != null && jsonObject.containsKey("success")) {
 							MessageBox.alert("Siker", "Adat mentése sikeres a cél adatbázisba!", null);
-							loadData(TARGET_GRID_URL, rightStore);
+							if (targetGrid == leftGrid) {
+								loadData(SOURCE_GRID_URL, leftStore);
+							} else if (targetGrid == rightGrid) {
+								loadData(TARGET_GRID_URL, rightStore);
+							}
 						} else {
 							MessageBox.alert("Hiba", "Mentés sikertelen! Szerver visszautasította az adatot.", null);
 						}
@@ -439,4 +466,44 @@ public class Feladat18 extends TabItem {
 		}
 	}
 
+	private void sendPutRequest(final String url, final ModelData item, final Grid<ModelData> grid) {
+		grid.mask("Mentés folyamatban...");
+		RequestBuilder builder = new RequestBuilder(RequestBuilder.PUT, url);
+		builder.setHeader("Content-Type", "application/json");
+
+		try {
+			String jsonData = createJsonFromModel(item);
+
+			builder.sendRequest(jsonData, new RequestCallback() {
+				public void onResponseReceived(Request request, Response response) {
+					grid.unmask();
+					if (response.getStatusCode() == 200) {
+						JSONValue jsonValue = JSONParser.parseLenient(response.getText());
+						JSONObject jsonObject = jsonValue.isObject();
+
+						if (jsonObject != null && jsonObject.containsKey("success")) {
+							MessageBox.alert("Siker", "Adat sikeresen frissítve az adatbázisban!", null);
+							if (grid == leftGrid) {
+								loadData(SOURCE_GRID_URL, leftStore);
+							} else if (grid == rightGrid) {
+								loadData(TARGET_GRID_URL, rightStore);
+							}
+						} else {
+							MessageBox.alert("Hiba", "Frissítés sikertelen! Szerver visszautasította az adatot.", null);
+						}
+					} else {
+						MessageBox.alert("Hiba", "Szerverhiba frissítéskor: " + response.getStatusText(), null);
+					}
+				}
+
+				public void onError(Request request, Throwable exception) {
+					grid.unmask();
+					MessageBox.alert("Hiba", "Hálózati hiba történt a frissítés során!", null);
+				}
+			});
+		} catch (RequestException e) {
+			grid.unmask();
+			MessageBox.alert("Hiba", "Hálózati hiba történt a frissítés során!", null);
+		}
+	}
 }
